@@ -5,9 +5,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django import forms
-from django.comtrlib import messages
+from django.contrib import messages
 
-from .models import Users, Listing, Category
+from .models import User, Listing, Category
 from .forms import NewListingForm, BidForm, CommentForm
 
 
