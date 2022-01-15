@@ -29,16 +29,16 @@ class Listing(models.Model):
     watched_by = models.ManyToManyField(User, blank=True, related_name="watchlist")
     
     def __str__(self):
-        return f"{self.title} - (${self.starting_bid})"
+        return f"{self.title}"
     
     def no_of_bids(self):
         return self.bids.all().count()
     
     def current_price(self):
-        if self.no_of_bids > 0:
+        if self.no_of_bids() > 0:
             return round(self.bids.aggregate(Max('amount'))['amount_max'],2)
         else:
-            return self.satrting_bid
+            return self.starting_bid
     
     def current_winner(self):
         if self.bids.all() > 0:

@@ -14,7 +14,7 @@ from .forms import NewListingForm, BidForm, CommentForm
 def index(request):
     print(Listing.objects.filter(active=True))
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.filter(active=True)
+        "listings": Listing.objects.filter(active=True),
     })
 
 def login_view(request):
@@ -69,9 +69,5 @@ def register(request):
         return render(request, "auctions/register.html")
     
 
-def new_lot(request, lot_id):
-    if request.method == "POST":
-        pass
-
-    else:
-        return render(request, "auctions/new_lot.html")
+def listing(request):
+    pass

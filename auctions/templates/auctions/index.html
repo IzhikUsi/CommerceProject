@@ -14,7 +14,7 @@
                     <div class="card-body border-top">
                         <h5 class="card-title text-truncate">{{ listing }}</h5>
                         <div class="d-flex justify-content-between">
-                            <h5 class="card-text p-2"><strong>${{ listing.current_price|intcomma }}</strong></h5>
+                            <h5 class="card-text p-2"><strong>{{ listing.current_price|intcomma }}</strong></h5>
                             <span class="p-2">{{listing.no_of_bids}} Ставка</span>
                         </div>
                         <p class="card-text text-truncate"><small>{{ listing.description }}</small></p>
