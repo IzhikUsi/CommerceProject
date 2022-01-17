@@ -9,4 +9,7 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path("listing/<int:listing_id>", views.listing, name="listing"),
     path("newlisting", views.newlisting, name="newlisting"),
+    path("addbid/<int:listing_id>", views.add_bid, name="addbid"),
+    path("addcomment/<int:listing_id>", views.add_comment, name="addcomment"),
+    
 ]

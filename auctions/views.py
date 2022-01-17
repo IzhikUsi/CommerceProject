@@ -108,5 +108,40 @@ def listing(request, listing_id):
         "user": request.user
     })
 
+    # Добавить ставку
+@login_required(login_url='login')
+def add_bid(request, listing_id):
+    if request_method == "POST":
+        listing = Listing.objects.get(pk=listing_id)
+        form = BidForm(request.POST)
+
+        if form.is_valide():
+            form.instance.user = request.user
+            form.instance.item = listing
+
+            if form.instance.amount > listing.current_price():
+                form.sava()
+                messages.success(request, 'Ставка успешно сделана.')
+                return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+            else:
+                messages.error(request, 'Ставка должна быть больше текущей ставки')
+                return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+        
+    # Добавить Коментарий
+@login_required(login_url='login')
+def add_comment(request, listing_id):
+    if request_method == "POST":
+        listing = Listing.objects.get(pk=listing_id)
+        form = CommentForm(request.POST)
+
+        if form.is_valide():
+            form.instance.user = request.user
+            form.instance.item = listing
+            form.save()
+            message.success(request, 'Коментарий успешно добавлен.')
+            return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+
+
+
 
 
