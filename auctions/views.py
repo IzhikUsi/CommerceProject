@@ -7,7 +7,7 @@ from django.urls import reverse
 from django import forms
 from django.contrib import messages
 
-from .models import User, Listing, Category
+from .models import User, Listing, Category, Comment
 from .forms import NewListingForm, BidForm, CommentForm
 
 
@@ -67,7 +67,46 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
-    
 
-def listing(request):
-    pass
+@login_required(login_url='login')
+# Добавить новый товар
+def newlisting(request):
+
+    if request.method == "POST":
+        form = NewListingForm(request.POST)
+
+        if form.is_valid():
+            form.instance.author = request.user
+            new_listing = form.save()
+            return HttpResponseRedirect(reverse("listing", args=(new_listing.pk,)))
+
+    else:
+        form = NewListingForm()
+    
+    return render(request, "auctions/newlisting.html", {
+        "form": form
+    })
+
+# Переход на страницу товара
+def listing(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    comments = Comment.objects.all()
+    total_comments = comments.count()
+
+    if request.user.is_authenticated:
+        is_in_watchlist = listing.is_in_watchlist(request.user)
+    else:
+        is_in_watchlist = False
+    
+    return render (request, "auctions/listing.html", {
+        "listing": listing,
+        "form": BidForm(),
+        "comment_form": CommentForm(),
+        "comments": comments,
+        "total_comments": total_comments,
+        "is_in_watchlist": is_in_watchlist,
+        "user": request.user
+    })
+
+
+
