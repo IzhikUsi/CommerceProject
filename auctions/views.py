@@ -108,7 +108,7 @@ def listing(request, listing_id):
         "user": request.user
     })
 
-    # Добавить ставку
+# Добавить ставку
 @login_required(login_url='login')
 def add_bid(request, listing_id):
     if request_method == "POST":
@@ -127,7 +127,7 @@ def add_bid(request, listing_id):
                 messages.error(request, 'Ставка должна быть больше текущей ставки')
                 return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
         
-    # Добавить Коментарий
+# Добавить Коментарий
 @login_required(login_url='login')
 def add_comment(request, listing_id):
     if request_method == "POST":
@@ -141,7 +141,17 @@ def add_comment(request, listing_id):
             message.success(request, 'Коментарий успешно добавлен.')
             return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 
+# страница с категориями
+def categories(request):
+    return render(request, "auctions/categories.html", {
+        "categories": Category.objects.all().order_by('name'),
+    })
 
-
+# список товаров категории
+def category(request, category_id):
+    return render(request, "auctions/category.html", {
+        "category": Category.objects.get(pk=category_id),
+        "listings": Listing.objects.filter(active=True, category=category_id)
+    })
 
 

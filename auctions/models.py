@@ -8,10 +8,10 @@ class User(AbstractUser):
     pass
 
 class Category(models.Model):
-    category = models.CharField(max_length=30)
+    name = models.CharField(max_length=40)
 
     def __str__(self):
-        return f"{self.category}"
+        return f"{self.name}"
 
         class Meta:
             ordering = ['name']
@@ -72,3 +72,4 @@ class Comment(models.Model):
 
         class Meta:
             ordering = ['-time']
+    
