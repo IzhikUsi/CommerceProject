@@ -157,14 +157,29 @@ def category(request, category_id):
 # Закрыть товар
 @login_required(login_url='login')
 def close(request, listing_id):
-    if request.method == "POST" and Listing.objects.get(pk=listing.id).author == request.user:
-        Listing.objects.filter(pk=listing.id).update(active=False)
+    if request.method == "POST" and Listing.objects.get(pk=listing_id).author == request.user:
+        Listing.objects.filter(pk=listing_id).update(active=False)
 
         messages.success(request, 'Аукцион успешно закрыт.')
         return redirect('/')
     else:
-        return render(request, auctions/error.html), {
+        return render(request, auctions/error.html, {
             "message": "Вы не имеете доступ к этому"
-        }
+        })
+
+# Добавить/Удалить из списка желаний
+@login_required(login_url='login')
+def watchlistcahnge(request, listing_id):
+    if request.method == "POST":
+        user = request.user
+        listing = Listing.objects.get(pk=listing_id)
+
+        if listing.is_in_watchlist(user):
+            listing.watched_by.remove(user)
+        else:
+            user.watchlist.add(listing)
+        
+        return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+
 
 
