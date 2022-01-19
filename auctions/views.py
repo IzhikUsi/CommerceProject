@@ -154,4 +154,17 @@ def category(request, category_id):
         "listings": Listing.objects.filter(active=True, category=category_id)
     })
 
+# Закрыть товар
+@login_required(login_url='login')
+def close(request, listing_id):
+    if request.method == "POST" and Listing.objects.get(pk=listing.id).author == request.user:
+        Listing.objects.filter(pk=listing.id).update(active=False)
+
+        messages.success(request, 'Аукцион успешно закрыт.')
+        return redirect('/')
+    else:
+        return render(request, auctions/error.html), {
+            "message": "Вы не имеете доступ к этому"
+        }
+
 
