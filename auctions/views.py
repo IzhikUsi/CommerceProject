@@ -169,17 +169,36 @@ def close(request, listing_id):
 
 # Добавить/Удалить из списка желаний
 @login_required(login_url='login')
-def watchlistcahnge(request, listing_id):
+def changewatchlist(request, listing_id):
     if request.method == "POST":
+        # Pulling out info for user and listing
         user = request.user
         listing = Listing.objects.get(pk=listing_id)
 
+        # If the user has this on their watchlist, remove it.
         if listing.is_in_watchlist(user):
             listing.watched_by.remove(user)
+        # If the user doesn't have this listing on their watchlist, add it.
         else:
             user.watchlist.add(listing)
         
         return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 
+# Удалить из списка
+@login_required(login_url='login')
+def watchlistremove(request, listing_id):
+    if request.method == "POST":
+        user = request.user
+        listing = Listing.objects.get(pk=listing_id)
 
+        listing.watched_by.remove(user)
+        messages.success(request, "Товар удаленен из списка желани")
 
+        return HttpResponseRedirect(reverse("watchlist"))
+
+# Список желаний
+@login_required(login_url='login')
+def watchlist(request):
+    return render(request, "auctions/watchlist.html", {
+        "watchlist": request.user.watchlist.all()
+    })
