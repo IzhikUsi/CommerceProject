@@ -35,9 +35,10 @@ class Listing(models.Model):
         return self.bids.all().count()
     
     def current_price(self):
+        """Works out the current highest bid or if no bids, the starting price"""
         if self.no_of_bids() > 0:
-            return round(self.bids.aggregate(Max('amount'))['amount_max'],2)
-        else:
+            return round(self.bids.aggregate(Max('amount'))['amount__max'],2)
+        else: 
             return self.starting_bid
     
     def current_winner(self):
@@ -47,7 +48,9 @@ class Listing(models.Model):
             return None
     
     def is_in_watchlist(self, user):
+        """Tells us if it's in the watchlist"""
         return user.watchlist.filter(pk=self.pk).exists()
+
 
     class Meta: 
         ordering = ['-created_at']

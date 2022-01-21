@@ -78,7 +78,7 @@ def newlisting(request):
         if form.is_valid():
             form.instance.author = request.user
             new_listing = form.save()
-            return HttpResponseRedirect(reverse("listing", args=(new_listing.pk,)))
+            return HttpResponseRedirect(reverse("listing", args=[new_listing.pk]))
 
     else:
         form = NewListingForm()
@@ -111,35 +111,35 @@ def listing(request, listing_id):
 # Добавить ставку
 @login_required(login_url='login')
 def add_bid(request, listing_id):
-    if request_method == "POST":
+    if request.method == "POST":
         listing = Listing.objects.get(pk=listing_id)
         form = BidForm(request.POST)
 
-        if form.is_valide():
+        if form.is_valid():
             form.instance.user = request.user
             form.instance.item = listing
 
             if form.instance.amount > listing.current_price():
-                form.sava()
+                form.save()
                 messages.success(request, 'Ставка успешно сделана.')
-                return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+                return HttpResponseRedirect(reverse("listing", args=[listing_id]))
             else:
                 messages.error(request, 'Ставка должна быть больше текущей ставки')
-                return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+                return HttpResponseRedirect(reverse("listing", args=[listing_id]))
         
 # Добавить Коментарий
 @login_required(login_url='login')
 def add_comment(request, listing_id):
-    if request_method == "POST":
+    if request.method == "POST":
         listing = Listing.objects.get(pk=listing_id)
         form = CommentForm(request.POST)
 
-        if form.is_valide():
+        if form.is_valid():
             form.instance.user = request.user
             form.instance.item = listing
             form.save()
-            message.success(request, 'Коментарий успешно добавлен.')
-            return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+            messages.success(request, 'Коментарий успешно добавлен.')
+            return HttpResponseRedirect(reverse("listing", args=[listing_id]))
 
 # страница с категориями
 def categories(request):
@@ -182,7 +182,7 @@ def changewatchlist(request, listing_id):
         else:
             user.watchlist.add(listing)
         
-        return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+        return HttpResponseRedirect(reverse("listing", args=[listing_id]))
 
 # Удалить из списка
 @login_required(login_url='login')
